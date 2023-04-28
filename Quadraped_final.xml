@@ -1,0 +1,183 @@
+<mujoco model="onshape">
+    <option timestep="0.005" gravity="0 0 -9.81"/>
+
+    <compiler angle="degree" />
+    <size njmax="500" nconmax="100" />
+    <asset>
+    	   <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
+         <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2"/>
+         <mesh name="linear_slide"  scale ="1 1 1" file="Linear_slide.stl"/>
+         <mesh name="linear_slide_mirror"  scale ="1 1 1" file="Linear_slide_mirror.stl"/>
+         <mesh name="hip_joint"  scale ="0.001 0.001 0.001" file="Hip_joint.stl"/>
+         <mesh name="upper_leg"  scale ="0.001 0.001 0.001" file="Upper_Leg.stl"/>
+         <mesh name="lower_leg"  scale ="1 1 1" file="Lower_leg.stl"/>
+         <mesh name ="linear_slide_inner" scale=" 1 1 1 " file ="Linear_slide_inner.stl" />
+         <mesh name="torso"  scale ="1 1 1" file="Torso.stl"/>
+         <mesh name="linear_slide_top" scale="1 1 1" file="Linear_slide_top.stl"/>
+         <mesh name="linear_slide_top_mirror" scale="1 1 1" file="Linear_slide_top_mirror.stl"/>
+   </asset>
+
+    <worldbody>
+     <light name="fixedlight" mode="fixed" directional="true"/>
+     <geom name="floor" size="0 0 10000" type="plane" material="grid" condim="3" friction="1 0 0"/>
+     <body pos = "0 0 0.247"  name ="torso" euler= "0 0 0" >
+               <camera name="track" mode="trackcom" pos="2 0 0.4" xyaxes="0 1 0 0 0 1"/>
+               <camera name="track2" mode="trackcom" pos="0 0 3" xyaxes="1 0 0 0 1 0 "/>
+               <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+               <geom   type="mesh" mesh ="torso" pos =" 0 0 0"  rgba="0 0 0.9 1"/>
+               <joint type="free"/>
+               <body   name="body_slide_inner_r_f"  pos ="0 0 0 " euler = "0 0 0" >
+                           <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                           <geom  type="mesh" mesh="linear_slide_inner" rgba=" 0.9 0.7 0 1" />
+                           <joint name ="body_slide_R_f_y" type ="slide" axis="0 -1 0" limited='true' range="0 0.08"  pos=" -0.035 0 0 " damping ="0"/>
+                           <body name="body_slide_r_f" pos = "0 0 0"  euler= "0 0 0" >
+                                   <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                   <geom   type="mesh" contype="0" conaffinity="0" group="1" mesh="linear_slide" rgba=" 0.9 0 0 1"/>
+                                   <geom   type="mesh" pos =" 0 -0.152 0" rgba=" 0.9 0 0 1" mesh="linear_slide_top"/>
+                                   <joint name ="body_slide_R_f_x" type ="slide" axis="-1 0 0" limited='true'  range="0 0.1" pos="0 -0.035 0 " damping ="0"/>
+                                   <body pos=" -0.215 -0.140 0 " euler ="0 0 -90">
+                                        <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                        <geom  name ="hip_j_r_f"   type ="mesh" mesh="hip_joint" rgba="0 0.9 0 1"/>
+                                        <joint name ="hip_j_R_f"  pos =" 0 0.03 0" type ="hinge" axis="1 0 0" limited='true' range ="0 90"  stiffness="0"/>
+                                        <body pos= "0 -0.0075 -0.1" euler ="0 0 180">
+                                            <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                            <geom  name ="upper_leg_r_f" type ="mesh" mesh="upper_leg" rgba="0 0.9 0 1"/>
+                                            <joint name ="hip_2_upper_leg_R_f" pos="0 0 0.1" type="hinge" axis="0 1 0"  limited='true' range ="-90 90" stiffness="0"/>
+                                             <body name ="lower_leg_r_f" pos ="0 0 -0.05">
+                                               <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                               <geom   type ="mesh" mesh="lower_leg" rgba="0 0 0.9 1" />
+                                               <joint name ="lower_leg_R_f"  type="slide" axis="0 0 1" limited='true' range="-0.13 0.03" damping ="0"/>
+
+
+                                           </body>
+                                        </body>
+                                   </body>
+                           </body>
+                </body>
+                <body  name="body_slide_inner_l_f" pos ="0 0 0" euler ="0 180 0 " >
+                           <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                           <geom  type="mesh" mesh="linear_slide_inner" rgba=" 0.9 0.7 0 1"/>
+                           <joint name ="body_slide_L_f_y" type ="slide" axis="0 -1 0" limited='true' range="0 0.08" pos=" -0.035 0 0 " damping ="0"/>
+                           <body name="body_slide_l_f" pos = "0 0 0"  euler= "0 0 0" >
+                                   <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                   <geom   type="mesh" contype="0" conaffinity="0" group="1" mesh="linear_slide_mirror" rgba=" 0.9 0 0 1"/>
+                                   <geom   type="mesh" pos =" 0 -0.152 0" rgba=" 0.9 0 0 1" mesh="linear_slide_top_mirror"/>
+                                   <joint name ="body_slide_L_f_x" type ="slide" axis="-1 0 0" limited='true' range="0 0.1" pos="  0 -0.035 0 " damping ="0"/>
+                                   <body pos=" -0.215 -0.140 0 " euler ="0 0 -90 ">
+                                        <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                        <geom  name ="hip_j_l_f"   type ="mesh" mesh="hip_joint" rgba="0 0.9 0 1"/>
+                                        <joint name ="hip_j_L_f"  pos =" 0 0.03 0" type ="hinge" axis="1 0 0" limited='true' range ="-90 0" stiffness="0"/>
+                                        <body pos= "0 -0.0075 0.1" euler ="0 180 180">
+                                            <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                            <geom name ="upper_leg_l_f" type ="mesh" mesh="upper_leg" rgba="0 0.9 0 1"/>
+                                            <joint name ="hip_2_upper_leg_L_f" pos="0 0 0.1" type="hinge" axis="0 1 0" limited='true' range ="-90 90" stiffness="0"/>
+                                            <body name ="lower_leg_l_f" pos ="0 0 -0.05">
+                                               <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                               <geom   type ="mesh" mesh="lower_leg" rgba="0 0 0.9 1" />
+                                               <joint name ="lower_leg_L_f"  type="slide" axis="0 0 1" limited='true' range="-0.13 0.03 " damping ="0"/>
+
+
+                                           </body>
+                                       </body>
+                                  </body>
+                              </body>
+                  </body>
+                  <body name="body_slide_inner_l_b" pos ="0 0 0" euler = "0 0 180" >
+                           <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                           <geom   type="mesh" mesh="linear_slide_inner" rgba=" 0.9 0.7 0 1"/>
+                           <joint name ="body_slide_L_b_y" type ="slide" axis="0 -1 0" limited='true' range="0 0.08" pos=" -0.035 0 0 " damping ="0"/>
+                           <body name="body_slide_l_b" pos = "0 0 0"  euler= "0 0 0" >
+                                   <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                   <geom   type="mesh" contype="0" conaffinity="0" group="1" mesh="linear_slide" rgba=" 0.9 0 0 1"/>
+                                   <geom   type="mesh" pos =" 0 -0.152 0" rgba=" 0.9 0 0 1" mesh="linear_slide_top"/>
+                                   <joint name ="body_slide_L_b_x" type ="slide" axis="-1 0 0" limited='true' range="0 0.1" pos="  0 -0.035 0 " damping ="0"/>
+                                   <body pos=" -0.215 -0.140 0 " euler ="0 0 -90 ">
+                                        <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                        <geom mass ="0.005" name ="hip_j_l_b"   type ="mesh" mesh="hip_joint" rgba="0 0.9 0 1"/>
+                                        <joint name ="hip_j_L_b"  pos =" 0 0.03 0" type ="hinge" axis="1 0 0" limited='true' range ="0 90" stiffness="0" />
+                                        <body pos= "0 -0.0075 -0.1" euler ="0 0 180">
+                                            <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                            <geom  name ="upper_leg_l_b" type ="mesh" mesh="upper_leg" rgba="0 0.9 0 1"/>
+                                            <joint name ="hip_2_upper_leg_L_b" pos="0 0 0.1" type="hinge" axis="0 1 0" limited='true' range ="-90 90" stiffness="0"/>
+                                            <body name ="lower_leg_l_b"pos ="0 0 -0.05">
+                                               <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                               <geom   type ="mesh" mesh="lower_leg" rgba="0 0 0.9 1" />
+                                               <joint name ="lower_leg_L_b"  type="slide" axis="0 0 1" limited='true' range="-0.13 0.03" damping ="0" />
+
+
+                                           </body>
+                                       </body>
+                                  </body>
+                              </body>
+                </body>
+                <body  name="body_slide_inner_r_b" pos ="0 0  0" euler = "180 0 0" >
+                           <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                           <geom   type="mesh" mesh="linear_slide_inner" rgba=" 0.9 0.7 0.9 1"/>
+                           <joint name ="body_slide_R_b_y" type ="slide" axis="0 -1 0" limited='true' range="0 0.08" pos=" -0.035 0 0 " damping ="0"/>
+                           <body name="body_slide_r_b" pos = "0 0 0"  euler= "0 0 0" >
+                                   <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                   <geom   type="mesh" contype="0" conaffinity="0" group="1" mesh="linear_slide_mirror" rgba=" 0.9 0 0 1"/>
+                                   <geom   type="mesh" pos =" 0 -0.152 0" rgba=" 0.9 0 0 1" mesh="linear_slide_top_mirror"/>
+                                   <joint name ="body_slide_R_b_x" type ="slide" axis="-1 0 0" limited='true' range="0 0.1" pos="  0 -0.035 0 " damping ="0"/>
+                                   <body pos=" -0.215 -0.140 0 " euler ="0 0 -90 ">
+                                        <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                        <geom name ="hip_j_r_b"   type ="mesh" mesh="hip_joint" rgba="0 0.9 0 1"/>
+                                        <joint name ="hip_j_R_b"  pos =" 0 0.03 0" type ="hinge" axis="1 0 0" limited='true' range ="-90 0" stiffness="0" />
+                                        <body pos= "0 -0.0075 0.1" euler="0 180 180">
+                                            <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                            <geom  name ="upper_leg_r_b" type ="mesh" mesh="upper_leg" rgba="0 0.9 0 1"/>
+                                            <joint name ="hip_2_upper_leg_R_b" pos="0 0 0.1" type="hinge" axis="0 1 0" limited='true' range ="-90 90" stiffness="0" />
+                                            <body name ="lower_leg_r_b" pos ="0 0 -0.05">
+                                               <inertial pos="0 0 0"  mass="1" diaginertia="0.1 0.1 0.1" />
+                                               <geom   type ="mesh" mesh="lower_leg" rgba="0 0 0.9 1"/>
+                                               <joint name ="lower_leg_R_b"  type="slide" axis="0 0 1" limited='true' range="-0.13 0.03" damping ="0"/>
+
+
+                                            </body>
+                                        </body>
+                                   </body>
+                              </body>
+                 </body>
+     </body>
+    </worldbody>
+
+
+
+    <actuator>
+
+
+
+
+   <!-- body-slides -->
+           <motor joint="body_slide_R_f_y" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_R_f_y" gear ="200" />
+           <motor joint="body_slide_R_f_x" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_R_f_x" gear ="200"/>
+           <motor joint="body_slide_L_f_y"  ctrllimited="true" ctrlrange="-0.3 0.3"  name="body_slide_motor_L_f_y" gear ="200"/>
+           <motor joint="body_slide_L_f_x"  ctrllimited="true" ctrlrange="-0.3 0.3"  name="body_slide_motor_L_f_x" gear ="200"/>
+           <motor joint="body_slide_L_b_y" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_L_b_y" gear ="200"/>
+           <motor joint="body_slide_L_b_x" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_L_b_x" gear ="200"/>
+           <motor joint="body_slide_R_b_y" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_R_b_y" gear ="200"/>
+           <motor joint="body_slide_R_b_x" ctrllimited="true" ctrlrange="-0.3 0.3" name="body_slide_motor_R_b_x" gear ="200"/>
+
+      <!-- Right front leg   -->
+           <motor joint="hip_j_R_f" ctrllimited="true" ctrlrange="-0.3 0.3" name="hip_j_motor_R_f" gear="30" />
+           <motor joint="hip_2_upper_leg_R_f" ctrllimited="true" ctrlrange="-0.3 0.3" name="hip_2_upper_leg_motor_R_f" gear="100" />
+           <motor joint="lower_leg_R_f" ctrllimited="true" ctrlrange="-0.3 0.3" name="lower_leg_R_f" gear="200" />
+
+      <!-- Left front leg   -->
+           <motor joint="hip_j_L_f" ctrllimited="true" ctrlrange="-0.3 0.3"  name="hip_j_motor_L_f" gear="30" />
+           <motor joint="hip_2_upper_leg_L_f" ctrllimited="true" ctrlrange="-0.3 0.3"  name="hip_2_upper_leg_motor_L_f" gear="100"/>
+           <motor joint="lower_leg_L_f" ctrllimited="true" ctrlrange="-0.3 0.3"  name="lower_leg_L_f" gear="200" />
+
+      <!-- Left back leg   -->
+           <motor joint="hip_j_L_b" ctrllimited="true" ctrlrange="-0.3 0.3" name="hip_j_motor_L_b" gear="30" />
+           <motor joint="hip_2_upper_leg_L_b" ctrllimited="true" ctrlrange="-0.3 0.3" name="hip_2_upper_leg_motor_L_b" gear="100"/>
+           <motor joint="lower_leg_L_b" ctrllimited="true" ctrlrange="-0.3 0.3" name="lower_leg_L_b" gear="200" />
+
+      <!-- Right back leg   -->
+           <motor joint="hip_j_R_b" ctrllimited="true" ctrlrange="-0.3 0.3"name="hip_j_motor_R_b" gear="30" />
+           <motor joint="hip_2_upper_leg_R_b" ctrllimited="true" ctrlrange="-0.3 0.3" name="hip_2_upper_leg_motor_R_b" gear="100"/>
+           <motor joint="lower_leg_R_b" ctrllimited="true" ctrlrange="-0.3 0.3" name="lower_leg_R_b" gear="200" />
+
+
+      </actuator>
+  </mujoco>
