@@ -1,10 +1,10 @@
-<mujoco model="onshape">
+<mujoco model="Quadraped">
     <option timestep="0.005" gravity="0 0 -9.81"/>
 
     <compiler angle="degree" />
     <size njmax="500" nconmax="100" />
     <asset>
-    	   <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
+    	 <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
          <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2"/>
          <mesh name="linear_slide"  scale ="1 1 1" file="Linear_slide.stl"/>
          <mesh name="linear_slide_mirror"  scale ="1 1 1" file="Linear_slide_mirror.stl"/>
